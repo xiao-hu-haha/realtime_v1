@@ -28,7 +28,7 @@ select re,
        count(1) as cnt
 from t3
 group by re;
-//最后汇总，可以减少了一部分运行时间59114
+//最后汇总，可以减少了一部分运行时间59114aa
 
 
 
