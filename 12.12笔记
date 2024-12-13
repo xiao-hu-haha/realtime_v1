@@ -1,0 +1,49 @@
+with t1 as (
+    select userid,  //用户id
+           order_no,  //订单id
+           concat(region,'-',rand()) as region,  //地区
+           product_no,//省份id
+           color_no,// 颜色
+           sale_amount,//金额
+           ts // 时间
+    from date_east
+    regin 里面有 华北和大西北地区，华北有一个亿数据，大西北只有800万条数据，
+     这么一看数据就是倾斜，我们要解决这个问题，自己构建一个字段把地方后面拼接一个随机数
+),
+    t2 as (
+        select region,
+               count(1) as cnt
+        from t1
+        group by region
+       // 根据新的字段这样就可以保证数据不会出现倾斜了
+    ),
+    t3 as (
+        select region,
+               substr(region,1,2) as re,
+               cnt
+        from t2
+        再把数据进行切割
+    )
+select re,
+       count(1) as cnt
+from t3
+group by re;
+//最后汇总，可以减少了一部分运行时间
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
