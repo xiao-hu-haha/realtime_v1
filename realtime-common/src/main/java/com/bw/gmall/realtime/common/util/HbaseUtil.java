@@ -82,7 +82,7 @@ public class HbaseUtil {
 
 //        // 列族描述器
 //        ColumnFamilyDescriptor cfDesc = ColumnFamilyDescriptorBuilder.of(family);
-//        // 表的描述器
+////        // 表的描述器
 //        TableDescriptor desc = TableDescriptorBuilder.newBuilder(tableName)
 //                .setColumnFamily(cfDesc) // 给表设置列族
 //                .build();

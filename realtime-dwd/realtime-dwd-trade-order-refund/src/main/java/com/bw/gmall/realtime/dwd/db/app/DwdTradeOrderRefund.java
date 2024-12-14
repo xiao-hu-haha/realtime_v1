@@ -34,7 +34,7 @@ public class DwdTradeOrderRefund extends BaseSqlApp {
                 "proc_time," +
                 "ts " +
                 "from topic_db " +
-                "where `database`='gmall' " +
+                "where `database`='gmall_env' " +
                 "and `table`='order_refund_info' " +
                 "and `type`='insert' ");
         tableEnv.createTemporaryView("order_refund_info", orderRefundInfo);
@@ -47,7 +47,7 @@ public class DwdTradeOrderRefund extends BaseSqlApp {
                 "data['province_id'] province_id," +
                 "`old` " +
                 "from topic_db " +
-                "where `database`='gmall' " +
+                "where `database`='gmall_env' " +
                 "and `table`='order_info' " +
                 "and `type`='update'" +
                 "and `old`['order_status'] is not null " +

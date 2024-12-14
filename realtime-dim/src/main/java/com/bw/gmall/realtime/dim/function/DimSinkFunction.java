@@ -15,13 +15,13 @@ public class DimSinkFunction extends RichSinkFunction<Tuple2<JSONObject, TablePr
 
 
 //    （1）定义成员变量jedis
-//    private Jedis jedis;
+    private Jedis jedis;
 
     private Connection hbaseConnect;
     @Override
     public void open(Configuration parameters) throws Exception {
         hbaseConnect = HbaseUtil.getHbaseConnect();
-//        jedis = RedisUtil.getJedis();
+        jedis = RedisUtil.getJedis();
     }
 
     @Override
@@ -45,10 +45,10 @@ public class DimSinkFunction extends RichSinkFunction<Tuple2<JSONObject, TablePr
         String redisKey = RedisUtil.getKey(sinkTable, rowKeyValue);
         if ("delete".equals(type)){
             HbaseUtil.deleteCells(hbaseConnect,Constant.HBASE_NAMESPACE,sinkTable,rowKeyValue);
-//            jedis.del(redisKey);
+            jedis.del(redisKey);
         }else{
             HbaseUtil.putCells(hbaseConnect, Constant.HBASE_NAMESPACE,sinkTable,rowKeyValue,sinkFamily,data);
-//             jedis.setex(redisKey,24*3600,data.toJSONString());
+             jedis.setex(redisKey,24*3600,data.toJSONString());
         }
 //在invoke方法中补充缓存清除操作
 
@@ -58,7 +58,7 @@ public class DimSinkFunction extends RichSinkFunction<Tuple2<JSONObject, TablePr
     @Override
     public void close() throws Exception {
         HbaseUtil.closeHBaseConn(hbaseConnect);
-//        RedisUtil.closeJedis(jedis);
+        RedisUtil.closeJedis(jedis);
     }
 
 

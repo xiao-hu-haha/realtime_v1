@@ -65,6 +65,8 @@ public class FlinkSourceUtil {
         Properties props = new Properties();
         props.setProperty("useSSL", "false");
         props.setProperty("allowPublicKeyRetrieval", "true");
+        Properties dbProps = new Properties();
+        dbProps.put("database.serverTimezone", "UTC");
         return MySqlSource.<String>builder()
                 .jdbcProperties(props)
                 .hostname(Constant.MYSQL_HOST)
@@ -74,7 +76,8 @@ public class FlinkSourceUtil {
                 .password(Constant.MYSQL_PASSWORD)
                 .tableList(processDataBase + "." + processDimTableName)
                 .deserializer(new JsonDebeziumDeserializationSchema()) // converts SourceRecord to String
-                .startupOptions(StartupOptions.initial())
+                .startupOptions(StartupOptions.earliest())
+                    .debeziumProperties(dbProps)
                 .build();
 
     }

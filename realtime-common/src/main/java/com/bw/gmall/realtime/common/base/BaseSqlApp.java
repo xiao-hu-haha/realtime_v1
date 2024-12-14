@@ -65,7 +65,7 @@ public abstract class BaseSqlApp {
                 " PRIMARY KEY (rowkey) NOT ENFORCED\n" +
                 ") WITH (\n" +
                 " 'connector' = 'hbase-2.2',\n" +
-                " 'table-name' = 'gmall:dim_base_dic',\n" +
+                " 'table-name' = 'gmall_env:dim_base_dic',\n" +
                 " 'zookeeper.quorum' = '"+ Constant.HBASE_ZOOKEEPER_QUORUM+"'\n" +
                 ")");
     }

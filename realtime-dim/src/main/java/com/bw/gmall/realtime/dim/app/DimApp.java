@@ -40,18 +40,21 @@ import com.alibaba.fastjson.JSON;
         import java.util.Arrays;
         import java.util.HashMap;
         import java.util.List;
+import java.util.Properties;
 
 @Slf4j
 public class DimApp extends BaseApp {
     public static void main(String[] args) {
-        new DimApp().start(Constant.TOPIC_DB, Constant.DIM_APP, 4, 10001);
+        new DimApp().start(Constant.TOPIC_DB, Constant.DIM_APP, 4, 1111);
     }
 
     @Override
     public void handle(StreamExecutionEnvironment env, DataStreamSource<String> dataStreamSource) {
+
         //  1.ETL清洗主流数据
         SingleOutputStreamOperator<JSONObject> etlStream = etl(dataStreamSource);
         // 2.通过CDC读取配置表,并行度只能是1
+//        etlStream.print("============================>");
         DataStreamSource<String> processStream = env.fromSource(FlinkSourceUtil.getMysqlSource(Constant.PROCESS_DATABASE, Constant.PROCESS_DIM_TABLE_NAME), WatermarkStrategy.noWatermarks(), "cdc_stream").setParallelism(1);
         // 3.在Hbase建表
         SingleOutputStreamOperator<TableProcessDim> createTableStream = createTable(processStream);
@@ -59,9 +62,10 @@ public class DimApp extends BaseApp {
         MapStateDescriptor<String,TableProcessDim> mapDescriptor = new MapStateDescriptor<String,TableProcessDim>("broadcast_state",String.class,TableProcessDim.class);
         BroadcastStream<TableProcessDim> broadcastStream = createTableStream.broadcast(mapDescriptor);
         SingleOutputStreamOperator<Tuple2<JSONObject, TableProcessDim>> processBroadCastStream = etlStream.connect(broadcastStream).process(new DimProcessFunction(mapDescriptor));
-        // 5.过滤字段
+//         5.过滤字段
         SingleOutputStreamOperator<Tuple2<JSONObject, TableProcessDim>> filterStream = getFilterStream(processBroadCastStream);
         // 6.写入Hbase
+        filterStream.print("写入============================================================》");
         filterStream.addSink(new DimSinkFunction());
     }
 
@@ -75,6 +79,7 @@ public class DimApp extends BaseApp {
                 TableProcessDim f1 = processDimTuple2.f1;
                 // 要写入的列
                 List<String> columns = Arrays.asList(f1.getSinkColumns().split(","));
+                System.out.println(columns+"===============================>");
                 JSONObject data = f0.getJSONObject("data");
                 data.keySet().removeIf(key -> !columns.contains(key));
                 return processDimTuple2;
@@ -99,7 +104,7 @@ public class DimApp extends BaseApp {
 //                            || "bootstrap-insert".equals(type) && data != null && data.length() > 2) {
 //                        collector.collect(jsonObject);
 //                    }
-                        if ("gmall".equals(db) && !"bootstrap-start".equals(type) && !"bootstrap-complete".equals(type) && data != null && data.length() > 0){
+                        if ("gmall_env".equals(db) && !"bootstrap-start".equals(type) && !"bootstrap-complete".equals(type) && data != null && data.length() > 0){
                             collector.collect(jsonObject);
                         }
                     }

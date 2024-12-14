@@ -32,6 +32,7 @@ public class DwdBaseDb extends BaseApp {
         SingleOutputStreamOperator<JSONObject> etlStream = etl(dataStreamSource);
         // 2.通过CDC读取配置表,并行度只能是1
         DataStreamSource<String> processStream = env.fromSource(FlinkSourceUtil.getMysqlSource(Constant.PROCESS_DATABASE, Constant.PROCESS_DWD_TABLE_NAME), WatermarkStrategy.noWatermarks(), "cdc_stream").setParallelism(1);
+//          processStream.print();
         SingleOutputStreamOperator<TableProcessDwd> processDwdStream = getTableProcessDwdSingleOutputStreamOperator(processStream);
 
         MapStateDescriptor<String, TableProcessDwd> mapDescriptor = new MapStateDescriptor<String,TableProcessDwd>("broadcast_state",String.class,TableProcessDwd.class);
@@ -39,14 +40,17 @@ public class DwdBaseDb extends BaseApp {
         // 3.主流跟配置进行连接，根据配置过滤要的流
         SingleOutputStreamOperator<Tuple2<JSONObject, TableProcessDwd>> processBroadStream = etlStream.connect(broadcastStream).process(new DwdProcessFunction(mapDescriptor));
         // 4.过滤字段
+     processDwdStream.print("======================================>");
         SingleOutputStreamOperator<Tuple2<JSONObject, TableProcessDwd>> filterStream = getFilterStream(processBroadStream);
+        filterStream.print("========================================>");
         // 5.写入Kafka
-//        filterStream.map(new MapFunction<Tuple2<JSONObject, TableProcessDwd>, String>() {
-//            @Override
-//            public String map(Tuple2<JSONObject, TableProcessDwd> jsonObjectTableProcessDwdTuple2) throws Exception {
-//                return jsonObjectTableProcessDwdTuple2.toString();
-//            }
-//        }).sinkTo(FlinkSinkUtil.getKafkaSink("dsajgj"));
+        filterStream.map(new MapFunction<Tuple2<JSONObject, TableProcessDwd>, String>() {
+            @Override
+            public String map(Tuple2<JSONObject, TableProcessDwd> jsonObjectTableProcessDwdTuple2) throws Exception {
+                return jsonObjectTableProcessDwdTuple2.toString();
+            }
+        }).sinkTo(FlinkSinkUtil.getKafkaSink("base_db"));
+        filterStream.print("=====================================>");
         filterStream.sinkTo(FlinkSinkUtil.getDwdKafkaSink());
 
     }
@@ -56,8 +60,10 @@ public class DwdBaseDb extends BaseApp {
             @Override
             public Tuple2<JSONObject, TableProcessDwd> map(Tuple2<JSONObject, TableProcessDwd> jsonObjectTableProcessDwdTuple2) throws Exception {
                 JSONObject f0 = jsonObjectTableProcessDwdTuple2.f0;
+
                 TableProcessDwd f1 = jsonObjectTableProcessDwdTuple2.f1;
                 JSONObject data = f0.getJSONObject("data");
+                System.out.println(data+"==================11111111111111111111=======================>");
                 String sinkColumns = f1.getSinkColumns();
                 Set<String> keys = data.keySet();
                 keys.removeIf(key -> !sinkColumns.contains(key));
@@ -65,7 +71,9 @@ public class DwdBaseDb extends BaseApp {
             }
         });
         return filterStream;
+
     }
+
 
     private SingleOutputStreamOperator<TableProcessDwd> getTableProcessDwdSingleOutputStreamOperator(DataStreamSource<String> processStream) {
         SingleOutputStreamOperator<TableProcessDwd> processDwdStream = processStream.flatMap(new FlatMapFunction<String, TableProcessDwd>() {

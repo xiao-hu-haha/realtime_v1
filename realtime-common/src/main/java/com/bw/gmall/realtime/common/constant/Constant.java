@@ -1,7 +1,7 @@
 package com.bw.gmall.realtime.common.constant;
 
 public class  Constant {
-    public static final String KAFKA_BROKERS = "hadoop101:9092";
+    public static final String KAFKA_BROKERS = "hadoop101:9092,hadoop102:9092,hadoop103:9092";
 
     public static final String TOPIC_DB = "realtime_topic_db";
     public static final String TOPIC_LOG = "realtime_topic_log";
@@ -18,7 +18,7 @@ public class  Constant {
     public static final String HBASE_ZOOKEEPER_QUORUM = "hadoop101";
 
     public static final String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
-    public static final String MYSQL_URL = "jdbc:mysql://localhost:3306/gmall_env?serverTimezone=Asia/Shanghai";
+    public static final String MYSQL_URL = "jdbc:mysql://hadoop101:3306/gmall_env?useSSL=false";
 
     public static final String TOPIC_DWD_TRAFFIC_START = "dwd_traffic_start";
     public static final String TOPIC_DWD_TRAFFIC_ERR = "dwd_traffic_err";
@@ -28,7 +28,7 @@ public class  Constant {
     public static final String TOPIC_DWD_BASE_LOG = "dwd_base_log";
 
     public static final String FENODES = "hadoop101:7030";
-    public static final String DORIS_DATABASE = "gmall2023_realtime";
+    public static final String DORIS_DATABASE = "gmall_env";
     public static final String DORIS_USERNAME = "root";
     public static final String DORIS_PASSWORD = "root";
 

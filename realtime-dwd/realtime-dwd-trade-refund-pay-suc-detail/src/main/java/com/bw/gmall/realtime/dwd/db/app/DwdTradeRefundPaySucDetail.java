@@ -37,7 +37,7 @@ public class DwdTradeRefundPaySucDetail extends BaseSqlApp {
                 "proc_time, " +
                 "ts " +
                 "from topic_db " +
-                "where `database`='gmall' " +
+                "where `database`='gmall_env' " +
                 "and `table`='refund_payment' " +
                 "and `type`='update' " +
                 "and `old`['refund_status'] is not null " +
@@ -51,7 +51,7 @@ public class DwdTradeRefundPaySucDetail extends BaseSqlApp {
                 "data['sku_id'] sku_id," +
                 "data['refund_num'] refund_num " +
                 "from topic_db " +
-                "where `database`='gmall' " +
+                "where `database`='gmall_env' " +
                 "and `table`='order_refund_info' " +
                 "and `type`='update' " +
                 "and `old`['refund_status'] is not null " +
@@ -65,7 +65,7 @@ public class DwdTradeRefundPaySucDetail extends BaseSqlApp {
                 "data['user_id'] user_id," +
                 "data['province_id'] province_id " +
                 "from topic_db " +
-                "where `database`='gmall' " +
+                "where `database`='gmall_env' " +
                 "and `table`='order_info' " +
                 "and `type`='update' " +
                 "and `old`['order_status'] is not null " +

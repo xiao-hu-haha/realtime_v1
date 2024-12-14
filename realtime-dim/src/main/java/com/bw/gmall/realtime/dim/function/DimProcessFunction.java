@@ -26,7 +26,7 @@ public class DimProcessFunction extends BroadcastProcessFunction<JSONObject, Tab
     public void open(Configuration parameters) throws Exception {
         // 手动读取配置表
         java.sql.Connection mysqlConnection = JdbcUtil.getMysqlConnection();
-        List<TableProcessDim> tableProcessDims = JdbcUtil.queryList(mysqlConnection, "select * from gmall2023_config.table_process_dim", TableProcessDim.class, true);
+        List<TableProcessDim> tableProcessDims = JdbcUtil.queryList(mysqlConnection, "select * from gmall_config.table_process_dim", TableProcessDim.class, true);
         for (TableProcessDim tableProcessDim : tableProcessDims) {
             hashMap.put(tableProcessDim.getSourceTable(),tableProcessDim);
         }

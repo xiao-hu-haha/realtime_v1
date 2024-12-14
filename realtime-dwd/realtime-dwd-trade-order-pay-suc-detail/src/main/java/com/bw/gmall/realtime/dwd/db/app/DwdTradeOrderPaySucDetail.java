@@ -121,7 +121,7 @@ public class DwdTradeOrderPaySucDetail extends BaseSqlApp {
                 "     row_time,\n" +
                 "     proc_time\n" +
                 "from topic_db\n" +
-                "where `database` = 'gmall'\n" +
+                "where `database` = 'gmall_env'\n" +
                 "and `table` = 'payment_info'\n" +
                 "and `type` = 'update'\n" +
                 "and `old`['payment_status'] is not null\n" +

@@ -59,7 +59,7 @@ public class DwdTradeCartAdd extends BaseSqlApp {
                 " `data`['source_id'] source_id,\n" +
                 "  ts\n" +
                 "from topic_db\n" +
-                "where `database` = 'gmall' and `table` = 'cart_info'\n" +
+                "where `database` = 'gmall_env' and `table` = 'cart_info'\n" +
                 "and (`type` = 'insert' or (`type` = 'update' and `old`['sku_num'] is not null\n" +
                 "and cast(`data`['sku_num'] as bigint) > cast(`old`['sku_num'] as bigint)))");
         tableEnv.createTemporaryView("cart_info", table);

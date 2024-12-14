@@ -90,7 +90,7 @@ public class DwdInteractionCommentInfo extends BaseSqlApp {
                 "`data`['create_time'] create_time,\n" +
                 " proc_time \n" +
                 "from topic_db\n" +
-                "where `database` = 'gmall' and `type` = 'insert'\n" +
+                "where `database` = 'gmall_env' and `type` = 'insert'\n" +
                 "and `table` = 'comment_info'");
     }
 }

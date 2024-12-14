@@ -46,7 +46,7 @@ public class DwdTradeOrderCancelDetail extends BaseSqlApp {
                                               " `data`['operate_time'] operate_time, " +
                                               " `ts` " +
                                               "from topic_db " +
-                                              "where `database`='gmall' " +
+                                              "where `database`='gmall_env' " +
                                               "and `table`='order_info' " +
                                               "and `type`='update' " +
                                               "and `old`['order_status']='1001' " +
