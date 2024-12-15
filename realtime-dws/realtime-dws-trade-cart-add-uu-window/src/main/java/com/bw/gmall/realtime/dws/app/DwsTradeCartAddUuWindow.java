@@ -87,12 +87,12 @@ public class DwsTradeCartAddUuWindow extends BaseApp {
                         bean.setCurDate(DateFormatUtil.tsToDateForPartition(System.currentTimeMillis()));
 
                         out.collect(bean);
+                        System.out.println(bean+"==================================>");
                     }
                 }
-            )
-            .map(new DorisMapFunction<>())
-            .sinkTo(FlinkSinkUtil.getDorisSink(Constant.DWS_TRADE_CART_ADD_UU_WINDOW));
-
+            );
+//            ;.map(new DorisMapFunction<>())
+//                .sinkTo(FlinkSinkUtil.getDorisSink(Constant.DWS_TRADE_CART_ADD_UU_WINDOW));
 
     }
 }

@@ -8,6 +8,7 @@ import com.bw.gmall.realtime.common.util.DateFormatUtil;
 import com.bw.gmall.realtime.common.util.FlinkSinkUtil;
 import org.apache.flink.streaming.api.datastream.DataStreamSink;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -27,7 +28,7 @@ public class DwsUserUserRegisterWindow extends BaseApp {
     }
 @Override
     public void handle(StreamExecutionEnvironment env, DataStreamSource<String> stream) {
-   stream.map(JSON::parseObject)
+    SingleOutputStreamOperator<UserRegisterBean> create_time = stream.map(JSON::parseObject)
             .assignTimestampsAndWatermarks(
                     WatermarkStrategy
                             .<JSONObject>forBoundedOutOfOrderness(Duration.ofSeconds(5L))
@@ -73,9 +74,8 @@ public class DwsUserUserRegisterWindow extends BaseApp {
 
                         }
                     }
-            )
-            .map(new DorisMapFunction<>())
-            .sinkTo(FlinkSinkUtil.getDorisSink(Constant.DWS_USER_USER_REGISTER_WINDOW));
+            );
+       create_time.print("======================================>");
 
 }
 }

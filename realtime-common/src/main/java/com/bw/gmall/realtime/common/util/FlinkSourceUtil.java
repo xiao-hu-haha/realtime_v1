@@ -72,7 +72,6 @@ public class FlinkSourceUtil {
                 .hostname(Constant.MYSQL_HOST)
                 .port(Constant.MYSQL_PORT)
                 .databaseList(Constant.PROCESS_DATABASE) // monitor all tables under inventory database
-                .username(Constant.DORIS_USERNAME)
                 .password(Constant.MYSQL_PASSWORD)
                 .tableList(processDataBase + "." + processDimTableName)
                 .deserializer(new JsonDebeziumDeserializationSchema()) // converts SourceRecord to String

@@ -78,9 +78,7 @@ public class FlinkSinkUtil {
                 .setSerializer(new SimpleStringSerializer()) //serialize according to string
                 .setDorisOptions(DorisOptions.builder()
                         .setFenodes(Constant.FENODES)
-                        .setTableIdentifier(Constant.DORIS_DATABASE+"."+tableName)
-                        .setUsername(Constant.DORIS_USERNAME)
-                        .setPassword(Constant.DORIS_PASSWORD).build())
+                        .setTableIdentifier(Constant.DORIS_DATABASE+"."+tableName).build())
                 .build();
     }
 

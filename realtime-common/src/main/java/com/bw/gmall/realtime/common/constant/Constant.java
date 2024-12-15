@@ -27,10 +27,9 @@ public class  Constant {
     public static final String TOPIC_DWD_TRAFFIC_DISPLAY = "dwd_traffic_display";
     public static final String TOPIC_DWD_BASE_LOG = "dwd_base_log";
 
-    public static final String FENODES = "hadoop101:7030";
+    public static final String FENODES = "192.168.80.120:8030";
     public static final String DORIS_DATABASE = "gmall_env";
-    public static final String DORIS_USERNAME = "root";
-    public static final String DORIS_PASSWORD = "root";
+
 
 
     public static final String TOPIC_DWD_INTERACTION_COMMENT_INFO = "dwd_interaction_comment_info";
