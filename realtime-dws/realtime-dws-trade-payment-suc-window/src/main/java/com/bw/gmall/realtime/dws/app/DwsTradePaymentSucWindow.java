@@ -32,7 +32,7 @@ public class DwsTradePaymentSucWindow extends BaseApp {
    @Override
     public void handle(StreamExecutionEnvironment env,
                        DataStreamSource<String> stream) {
-       SingleOutputStreamOperator<TradePaymentBean> reduce = stream
+       SingleOutputStreamOperator<String> map = stream
                .map(JSON::parseObject)
                .keyBy(obj -> obj.getString("user_id"))
                .process(new KeyedProcessFunction<String, JSONObject, TradePaymentBean>() {
@@ -97,11 +97,13 @@ public class DwsTradePaymentSucWindow extends BaseApp {
                                bean.setEdt(DateFormatUtil.tsToDateTime(ctx.window().getEnd()));
 
                                bean.setCurDate(DateFormatUtil.tsToDateForPartition(System.currentTimeMillis()));
-                               System.out.println(bean+"=========================================>");
+                               System.out.println(bean + "=========================================>");
                                out.collect(bean);
                            }
                        }
-               );
+               ).map(new DorisMapFunction<>());
+       map.print();
+       map.sinkTo(FlinkSinkUtil.getDorisSink("ch_gmall_env.dws_trade_payment_suc_window"));
 
    }
 }

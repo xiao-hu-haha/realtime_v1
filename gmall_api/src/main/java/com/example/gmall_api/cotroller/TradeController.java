@@ -25,9 +25,9 @@ public class TradeController {
     public String getTotalAmount(
             @RequestParam(value = "date", defaultValue = "1") Integer date) {
 //        System.out.println(date);
-//        if (date == 1) {
-//            date = DateUtil.now();
-//        }
+        if (date == 1) {
+            date = DateUtil.now();
+        }
         Double totalAmount = tradeStatsService.getTotalAmount(date);
         if (totalAmount == null) {
             return "";

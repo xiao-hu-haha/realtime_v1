@@ -7,6 +7,7 @@ import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.async.RedisAsyncCommands;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.apache.flink.streaming.api.windowing.time.Time;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -84,6 +85,7 @@ public class RedisUtil {
  */
 public static StatefulRedisConnection<String, String> getRedisAsyncConnection() {
     RedisClient redisClient = RedisClient.create("redis://hadoop101:6379/2");
+    Time.seconds(5);
     return redisClient.connect();
 }
 

@@ -14,7 +14,7 @@ public interface TradeStatsMapper {
     // 交易总金额
     @Select("select sum(order_amount) order_total_amount\n" +
             "from dws_trade_province_order_window\n" +
-            "         partition (par#{date});")
+            "         partition ({date});")
     Double selectTotalAmount(@Param("date") Integer date);
 
     // 下单情况统计

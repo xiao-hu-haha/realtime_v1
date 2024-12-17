@@ -67,7 +67,7 @@ public class DwsTradeSkuOrderWindowAsync extends BaseApp {
 
         stream.map(new DorisMapFunction<>())
 //                .print();
-                .sinkTo(FlinkSinkUtil.getDorisSink(Constant.DWS_TRADE_SKU_ORDER_WINDOW));
+                .sinkTo(FlinkSinkUtil.getDorisSink("ch_gmall_env.dws_trade_sku_order_window"));
 
     }
 

@@ -9,6 +9,7 @@ import com.bw.gmall.realtime.common.function.AsyncDimFunction;
 import com.bw.gmall.realtime.common.function.DorisMapFunction;
 import com.bw.gmall.realtime.common.util.DateFormatUtil;
 import com.bw.gmall.realtime.common.util.FlinkSinkUtil;
+import com.bw.gmall.realtime.dws.fun.Synchronous;
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.functions.ReduceFunction;
@@ -26,6 +27,7 @@ import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.util.Collector;
 
+import java.net.SocketImpl;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
@@ -114,32 +116,37 @@ public class DwsTradeProvinceOrderWindow extends BaseApp {
                             }
                         }
                 );
-
-        AsyncDataStream
-                .unorderedWait(  // 异步的方式补充维度
-                        reducedStream,
-                        new AsyncDimFunction<TradeProvinceOrderBean>() {
-                            @Override
-                            public String getRowKey(TradeProvinceOrderBean bean) {
-                                return bean.getProvinceId();
-                            }
-
-                            @Override
-                            public String getTableName() {
-                                return "dim_base_province";
-                            }
-
-                            @Override
-                            public void addDims(TradeProvinceOrderBean bean,
-                                                JSONObject dim) {
-                                bean.setProvinceName(dim.getString("name"));
-                            }
-                        },
-                        120,
-                        TimeUnit.SECONDS
-                )
-                .map(new DorisMapFunction<>())
-                .sinkTo(FlinkSinkUtil.getDorisSink(Constant.DWS_TRADE_PROVINCE_ORDER_WINDOW));
+        SingleOutputStreamOperator<TradeProvinceOrderBean> mapStream = reducedStream.map(new Synchronous());
+         mapStream.print();
+        SingleOutputStreamOperator<String> map = mapStream.map(new DorisMapFunction<>());
+        map.sinkTo(FlinkSinkUtil.getDorisSink("ch_gmall_env.dws_trade_province_order_window"));
+//
+//        SingleOutputStreamOperator<String> map = AsyncDataStream
+//                .unorderedWait(  // 异步的方式补充维度
+//                        reducedStream,
+//                        new AsyncDimFunction<TradeProvinceOrderBean>() {
+//                            @Override
+//                            public String getRowKey(TradeProvinceOrderBean bean) {
+//                                return bean.getProvinceId();
+//                            }
+//
+//                            @Override
+//                            public String getTableName() {
+//                                return "dim_base_province";
+//                            }
+//
+//                            @Override
+//                            public void addDims(TradeProvinceOrderBean bean,
+//                                                JSONObject dim) {
+//                                bean.setProvinceName(dim.getString("name"));
+//                            }
+//                        },
+//                        120,
+//                        TimeUnit.SECONDS
+//                )
+//                .map(new DorisMapFunction<>());
+//        map.print("========AAAAAAAAAAAAAAAA==============>");
+//                .sinkTo(FlinkSinkUtil.getDorisSink(Constant.DWS_TRADE_PROVINCE_ORDER_WINDOW));
 
 
     }

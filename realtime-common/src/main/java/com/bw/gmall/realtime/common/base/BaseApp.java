@@ -6,6 +6,7 @@ import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.state.hashmap.HashMapStateBackend;
 import org.apache.flink.streaming.api.CheckpointingMode;
+import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import static org.apache.flink.streaming.api.environment.CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION;
@@ -20,9 +21,11 @@ public abstract class BaseApp {
         Configuration configuration = new Configuration();
         configuration.setInteger("rest.port", port);
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment(configuration);
-        // 3.设置并行度
+//        // 3.设置并行度
         env.setParallelism(p);
-        // 4.设置CK
+        env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
+
+//        // 4.设置CK
         env.setStateBackend(new HashMapStateBackend());
         env.enableCheckpointing(5000);
         env.getCheckpointConfig().setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE);
@@ -31,7 +34,7 @@ public abstract class BaseApp {
         env.getCheckpointConfig().setMinPauseBetweenCheckpoints(5000);
         env.getCheckpointConfig().setCheckpointTimeout(10000);
         env.getCheckpointConfig().setExternalizedCheckpointCleanup(RETAIN_ON_CANCELLATION);
-        // 5.消费数据
+//        // 5.消费数据
         DataStreamSource<String> dataStreamSource = env.fromSource(FlinkSourceUtil.getKafkaSource(topicDb, groupId), WatermarkStrategy.noWatermarks(), "Kafka Source");
         // 6.打印数据
 //        dataStreamSource.print();

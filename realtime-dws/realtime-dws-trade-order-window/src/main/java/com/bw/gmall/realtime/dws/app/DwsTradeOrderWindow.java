@@ -22,6 +22,7 @@ import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow;
 import org.apache.flink.util.Collector;
 
+import javax.crypto.MacSpi;
 import java.time.Duration;
 
 public class DwsTradeOrderWindow extends BaseApp {
@@ -30,7 +31,7 @@ public class DwsTradeOrderWindow extends BaseApp {
     }
   @Override
     public void handle(StreamExecutionEnvironment env, DataStreamSource<String> stream) {
-      SingleOutputStreamOperator<TradeOrderBean> reduce = stream
+      SingleOutputStreamOperator<String> map = stream
               .map(JSONObject::parseObject)
               .assignTimestampsAndWatermarks(
                       WatermarkStrategy
@@ -97,10 +98,13 @@ public class DwsTradeOrderWindow extends BaseApp {
                               bean.setCurDate(DateFormatUtil.tsToDateForPartition(System.currentTimeMillis()));
 
                               out.collect(bean);
-                              System.out.println(bean+"=============================>");
+//                              System.out.println(bean+"=============================>");
                           }
                       }
-              );
+              )
+              .map(new DorisMapFunction<>());
+          map.print();
+          map.sinkTo(FlinkSinkUtil.getDorisSink("ch_gmall_env.dws_trade_order_window"));
 
 
   }

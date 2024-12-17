@@ -62,7 +62,7 @@ public abstract class AsyncDimFunction<T> extends RichAsyncFunction<T, T> implem
                     //2. 当 redis 没有读到维度的时候,  从 hbase 读取维度数据
                     JSONObject dim = dimFromRedis;
                     if (dim == null) {  // redis 中没有读到
-                       dim =  HbaseUtil.readDimAsync(hBaseAsyncConn, "gmall", getTableName(), getRowKey(bean));
+                       dim =  HbaseUtil.readDimAsync(hBaseAsyncConn, "gmall_env", getTableName(), getRowKey(bean));
                        // 把维度写入到 Redis 中
                         RedisUtil.writeDimAsync(redisAsyncConn, getTableName(), getRowKey(bean), dim);
                         log.info("走的是 hbase " + getTableName() + "  " + getRowKey(bean));

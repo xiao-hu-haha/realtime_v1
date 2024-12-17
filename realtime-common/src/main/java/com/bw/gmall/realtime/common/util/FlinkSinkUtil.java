@@ -69,6 +69,7 @@ public class FlinkSinkUtil {
         // 上游是 json 写入时，需要开启配置
         properties.setProperty("format", "json");
         properties.setProperty("read_json_by_line", "true");
+        System.err.println("getDorisSink -> "+ "调用");
         return DorisSink.<String>builder()
                 .setDorisReadOptions(DorisReadOptions.builder().build())
                 .setDorisExecutionOptions( DorisExecutionOptions.builder()
@@ -77,8 +78,11 @@ public class FlinkSinkUtil {
                         .setStreamLoadProp(properties).build())
                 .setSerializer(new SimpleStringSerializer()) //serialize according to string
                 .setDorisOptions(DorisOptions.builder()
-                        .setFenodes(Constant.FENODES)
-                        .setTableIdentifier(Constant.DORIS_DATABASE+"."+tableName).build())
+                        .setFenodes("10.39.48.33:8030")
+                        .setTableIdentifier(tableName)
+                        .setUsername("admin")
+                        .setPassword("zh1028,./")
+                        .build())
                 .build();
     }
 
