@@ -13,7 +13,8 @@
         <module>realtime-dim</module>
         <module>realtime-dwd</module>
         <module>realtime-dws</module>
-<!--        <module>gmall_api</module>-->
+        <module>com.bw.app</module>
+        <!--        <module>gmall_api</module>-->
     </modules>
 
     <properties>

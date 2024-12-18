@@ -14,29 +14,29 @@ public interface TradeStatsMapper {
     // 交易总金额
     @Select("select sum(order_amount) order_total_amount\n" +
             "from dws_trade_province_order_window\n" +
-            "         partition ({date});")
+            "         ")
     Double selectTotalAmount(@Param("date") Integer date);
 
     // 下单情况统计
     @Select("select '订单数' type,\n" +
             "       sum(order_count) value\n" +
             "from dws_trade_province_order_window\n" +
-            "partition (par#{date})\n" +
+            "\n" +
             "union all\n" +
             "select '下单人数' type,\n" +
             "       sum(order_unique_user_count) value\n" +
             "from dws_trade_order_window\n" +
-            "partition (par#{date})\n" +
+            "\n" +
             "union all\n" +
             "select '退单数' type,\n" +
             "       sum(refund_count)       value\n" +
             "from dws_trade_trademark_category_user_refund_window\n" +
-            "partition (par#{date})\n" +
+            " \n" +
             "union all\n" +
             "select '退单人数'                  type,\n" +
             "       count(distinct user_id) value\n" +
             "from dws_trade_trademark_category_user_refund_window\n" +
-            "         partition (par#{date});")
+            " ")
     List<TradeStats> selectTradeStats(@Param("date") Integer date);
 
 
